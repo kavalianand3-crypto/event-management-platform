@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management Platform</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fb;
+            text-align: center;
+        }
+        header {
+            background: #182848;
+            color: white;
+            padding: 25px;
+        }
+        nav {
+            background: #284078;
+            padding: 15px;
+        }
+        nav a {
+            color: white;
+            margin: 15px;
+            text-decoration: none;
+        }
+        .hero {
+            padding: 55px 20px;
+        }
+        .hero h2 {
+            color: #182848;
+            font-size: 32px;
+        }
+        button {
+            background: #5b5de6;
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .events {
+            background: white;
+            margin: 20px auto;
+            padding: 25px;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+        footer {
+            background: #182848;
+            color: white;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>EventHub</h1>
+        <p>Plan Your Events. Create Memories.</p>
+    </header>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#events">Events</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <section class="hero" id="home">
+        <h2>Welcome to EventHub</h2>
+        <p>Discover and manage your favorite events in one place.</p>
+        <button onclick="showMessage()">Explore Events</button>
+    </section>
+
+    <section class="events" id="events">
+        <h2>Upcoming Events</h2>
+        <p>Birthday Parties | Weddings | Tech Events</p>
+        <button onclick="showMessage()">Register Interest</button>
+    </section>
+
+    <footer id="contact">
+        <p>Contact: events@example.com</p>
+        <p>EventHub Project | AWS & DevOps</p>
+    </footer>
+
+    <script>
+        function showMessage() {
+            alert("Welcome to EventHub! More features coming soon.");
+        }
+    </script>
+
+</body>
+</html>
