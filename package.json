@@ -1,0 +1,15 @@
+{
+  "name": "event-management-platform-main",
+  "version": "1.0.0",
+  "description": "online Event management platform using aws and devops",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^13.1.0"
+  }
+}
