@@ -7,7 +7,7 @@
 
   <style>
     * {
-      margin: 0;
+      margin: 0
       padding: 0;
       box-sizing: border-box;
     }
@@ -333,7 +333,64 @@
         weddings and technology events in one place.
       </p>
     </section>
+    <section class="section" id="register">
+  <div class="section-heading">
+    <h2>Register for an Event</h2>
+    <p>Enter your details to register your interest.</p>
+  </div>
 
+  <form id="eventForm" style="max-width:600px;margin:auto;background:white;padding:28px;border-radius:15px;box-shadow:0 5px 22px #17203312;">
+    <label for="fullName">Full Name</label>
+    <input id="fullName" type="text" placeholder="Enter your name" required>
+
+    <label for="email">Email Address</label>
+    <input id="email" type="email" placeholder="Enter your email" required>
+
+    <label for="eventType">Select Event</label>
+    <select id="eventType" required>
+      <option value="">Choose an event</option>
+      <option>Birthday Parties</option>
+      <option>Wedding Events</option>
+      <option>Tech Events</option>
+    </select>
+
+    <label for="eventDate">Preferred Date</label>
+    <input id="eventDate" type="date" required>
+
+    <button class="btn" type="submit" style="width:100%;margin-top:20px">
+      Submit Registration
+    </button>
+
+    <p id="formMessage" role="status"></p>
+  </form>
+</section>
+
+<style>
+  #eventForm label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+
+  #eventForm input,
+  #eventForm select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    font: inherit;
+  }
+</style>
+
+<script>
+  document.getElementById("eventForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    document.getElementById("formMessage").textContent =
+      "Demo submitted! Details are not saved to a database.";
+    this.reset();
+  });
+</script>
     <section class="section contact" id="contact">
       <div class="section-heading">
         <h2>Plan Your Next Event</h2>
