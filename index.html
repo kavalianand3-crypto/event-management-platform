@@ -328,65 +328,76 @@
   </footer>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDoXnqutZQgnvFo1m1zX8uCYhP5WSx9brM",
-      authDomain: "eventhub-website.firebaseapp.com",
-      projectId: "eventhub-website",
-      storageBucket: "eventhub-website.firebasestorage.app",
-      messagingSenderId: "683301555233",
-      appId: "1:683301555233:web:1cc634fd73c627e636e760",
-      measurementId: "G-EQJKQDT05S"
-    };
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const form = document.getElementById("eventForm");
-    const message = document.getElementById("formMessage");
-    const submitButton = form.querySelector('button[type="submit"]');
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDoXnqutZQgnvFo1m1zX8uCYhP5WSx9brM",
+    authDomain: "eventhub-website.firebaseapp.com",
+    projectId: "eventhub-website",
+    storageBucket: "eventhub-website.firebasestorage.app",
+    messagingSenderId: "683301555233",
+    appId: "1:683301555233:web:1cc634fd73c627e636e760",
+    measurementId: "G-EQJKQDT05S"
+  };
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-      const fullName = document.getElementById("fullName").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const eventType = document.getElementById("eventType").value;
-      const eventDate = document.getElementById("eventDate").value;
+  const form = document.getElementById("eventForm");
+  const message = document.getElementById("formMessage");
 
-      if (!fullName || !email || !eventType || !eventDate) {
-        message.textContent = "Please complete all fields.";
-        return;
-      }
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      message.textContent = "Submitting registration...";
-      submitButton.disabled = true;
+    message.textContent = "Saving registration...";
+    message.style.color = "#334f99";
 
-      try {
-        await addDoc(collection(db, "registrations"), {
-          fullName,
-          email,
-          eventType,
-          eventDate,
-          createdAt: serverTimestamp()
-        });
+    const fullName =
+      document.getElementById("fullName").value.trim();
 
-        message.textContent = "Registration successful!";
-        form.reset();
-      } catch (error) {
-        console.error("Firebase registration error:", error);
-        message.textContent =
-          "Registration failed. Please check Firebase Firestore rules and try again.";
-      } finally {
-        submitButton.disabled = false;
-      }
-    });
-  </script>
+    const email =
+      document.getElementById("email").value.trim();
+
+    const eventType =
+      document.getElementById("eventType").value;
+
+    const eventDate =
+      document.getElementById("eventDate").value;
+
+    try {
+      await addDoc(collection(db, "registrations"), {
+        fullName: fullName,
+        email: email,
+        eventType: eventType,
+        eventDate: eventDate,
+        createdAt: serverTimestamp()
+      });
+
+      message.textContent =
+        "Registration successful! Details saved.";
+      message.style.color = "green";
+
+      form.reset();
+
+    } catch (error) {
+      console.error("Firebase save error:", error);
+
+      message.textContent =
+        "Registration failed: " +
+        (error.code || error.message);
+
+      message.style.color = "red";
+    }
+  });
+</script>
 </body>
 </html>
