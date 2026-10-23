@@ -383,15 +383,33 @@
   }
 </style>
 
-<script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; 
+  const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
   document.getElementById("eventForm").addEventListener("submit", function(e) {
     e.preventDefault();
     document.getElementById("formMessage").textContent =
       "Demo submitted! Details are not saved to a database.";
     this.reset();
   });
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDoXnqutZQgnvFo1m1zX8uCYhP5WSx9brM",
+  authDomain: "eventhub-website.firebaseapp.com",
+  projectId: "eventhub-website",
+  storageBucket: "eventhub-website.firebasestorage.app",
+  messagingSenderId: "683301555233",
+  appId: "1:683301555233:web:1cc634fd73c627e636e760",
+  measurementId: "G-EQJKQDT05S"
+};
 </script>
-    <section class="section contact" id="contact">
+       <section class="section contact" id="contact">
       <div class="section-heading">
         <h2>Plan Your Next Event</h2>
         <p>Have an event in mind? We would love to hear from you.</p>
