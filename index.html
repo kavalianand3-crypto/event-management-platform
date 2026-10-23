@@ -1,153 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EventHub</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f7fb;
-      color: #222;
-    }
-    header {
-      background: #14213d;
-      color: white;
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-    nav a {
-      color: white;
-      margin: 0 8px;
-      text-decoration: none;
-    }
-    .hero {
-      background: #315ca8;
-      color: white;
-      text-align: center;
-      padding: 65px 15px;
-    }
-    section { padding: 35px 8%; }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 18px;
-    }
-    .card, form {
-      background: white;
-      padding: 22px;
-      border-radius: 10px;
-      box-shadow: 0 3px 12px #0001;
-    }
-    .btn {
-      background: #fca311;
-      color: #14213d;
-      padding: 12px 20px;
-      border: 0;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    form { max-width: 500px; margin: auto; }
-    label { display: block; margin-top: 14px; }
-    input, select {
-      width: 100%;
-      padding: 11px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    form button { margin-top: 20px; width: 100%; }
-    #formMessage { overflow-wrap: anywhere; }
-    footer {
-      background: #14213d;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-
-<header>
-  <h2>EventHub</h2>
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#events">Events</a>
-    <a href="#about">About</a>
-    <a href="#register">Register</a>
-  </nav>
-</header>
-
-<div class="hero" id="home">
-  <h1>Welcome to EventHub</h1>
-  <p>Plan your events with us!</p>
-  <a class="btn" href="#register">Register Now</a>
-</div>
-
-<section id="events">
-  <h2>Our Events</h2>
-  <div class="cards">
-    <div class="card">
-      <h3>Birthday Parties</h3>
-      <p>Make your special day memorable.</p>
-    </div>
-    <div class="card">
-      <h3>Wedding Events</h3>
-      <p>Plan your wedding celebrations.</p>
-    </div>
-    <div class="card">
-      <h3>Tech Events</h3>
-      <p>Organize workshops and conferences.</p>
-    </div>
-  </div>
-</section>
-
-<section id="about">
-  <h2>About Us</h2>
-  <p>EventHub makes event planning and registration easy.</p>
-</section>
-
-<section id="register">
-  <h2 style="text-align:center">Event Registration</h2>
-  <form id="registrationForm">
-    <label for="fullName">Full Name</label>
-    <input id="fullName" maxlength="100" required>
-
-    <label for="email">Email</label>
-    <input id="email" type="email" required>
-
-    <label for="eventType">Event Type</label>
-    <select id="eventType" required>
-      <option value="">Choose event</option>
-      <option>Birthday Parties</option>
-      <option>Wedding Events</option>
-      <option>Tech Events</option>
-    </select>
-
-    <label for="eventDate">Event Date</label>
-    <input id="eventDate" type="date" required>
-
-    <button class="btn" type="submit">Submit Registration</button>
-    <p id="formMessage"></p>
-  </form>
-</section>
-
-<footer>
-  <p>© 2026 EventHub</p>
-</footer>
-
 <script type="module">
-  import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
   import {
-    getFirestore, collection, addDoc, serverTimestamp
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+  // Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyDoXnqutZQgnvFo1m1zX8uCYhP5WSx9brM",
     authDomain: "eventhub-website.firebaseapp.com",
@@ -158,39 +19,42 @@
     measurementId: "G-EQJKQDT05S"
   };
 
+  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  document.getElementById("registrationForm")
-    .addEventListener("submit", async (e) => {
-      e.preventDefault();
+  const form = document.getElementById("eventForm");
+  const message = document.getElementById("formMessage");
 
-      const message = document.getElementById("formMessage");
-      const button = e.target.querySelector("button");
-      button.disabled = true;
-      message.textContent = "Saving registration...";
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      try {
-        await addDoc(collection(db, "registrations"), {
-          fullName: document.getElementById("fullName").value.trim(),
-          email: document.getElementById("email").value.trim(),
-          eventType: document.getElementById("eventType").value,
-          eventDate: document.getElementById("eventDate").value,
-          createdAt: serverTimestamp()
-        });
+    const fullName = document.getElementById("fullName").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const eventType = document.getElementById("eventType").value;
+    const eventDate = document.getElementById("eventDate").value;
 
-        message.style.color = "green";
-        message.textContent = "Registration saved successfully!";
-        e.target.reset();
-      } catch (error) {
-        console.error(error);
-        message.style.color = "red";
-        message.textContent = "Save failed: " + error.code;
-      } finally {
-        button.disabled = false;
-      }
-    });
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    message.textContent = "Submitting registration...";
+
+    try {
+      await addDoc(collection(db, "registrations"), {
+        fullName,
+        email,
+        eventType,
+        eventDate,
+        createdAt: serverTimestamp()
+      });
+
+      message.textContent = "Registration successful!";
+      form.reset();
+    } catch (error) {
+      console.error("Firebase error:", error);
+      message.textContent =
+        "Registration failed: " + error.message;
+    } finally {
+      button.disabled = false;
+    }
+  });
 </script>
-
-</body>
-</html>
