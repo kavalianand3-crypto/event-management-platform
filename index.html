@@ -1,60 +1,392 @@
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventHub | Discover Amazing Events</title>
 
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-  // Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyDoXnqutZQgnvFo1m1zX8uCYhP5WSx9brM",
-    authDomain: "eventhub-website.firebaseapp.com",
-    projectId: "eventhub-website",
-    storageBucket: "eventhub-website.firebasestorage.app",
-    messagingSenderId: "683301555233",
-    appId: "1:683301555233:web:1cc634fd73c627e636e760",
-    measurementId: "G-EQJKQDT05S"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const form = document.getElementById("eventForm");
-  const message = document.getElementById("formMessage");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const fullName = document.getElementById("fullName").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const eventType = document.getElementById("eventType").value;
-    const eventDate = document.getElementById("eventDate").value;
-
-    const button = form.querySelector('button[type="submit"]');
-    button.disabled = true;
-    message.textContent = "Submitting registration...";
-
-    try {
-      await addDoc(collection(db, "registrations"), {
-        fullName,
-        email,
-        eventType,
-        eventDate,
-        createdAt: serverTimestamp()
-      });
-
-      message.textContent = "Registration successful!";
-      form.reset();
-    } catch (error) {
-      console.error("Firebase error:", error);
-      message.textContent =
-        "Registration failed: " + error.message;
-    } finally {
-      button.disabled = false;
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-  });
-</script>
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8fafc;
+      color: #172033;
+      line-height: 1.6;
+    }
+
+    a { text-decoration: none; }
+
+    .navbar {
+      background: #101a35;
+      color: white;
+      padding: 18px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: bold;
+      color: #7c9cff;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a { color: white; }
+    .nav-links a:hover { color: #91aaff; }
+
+    .hero {
+      padding: 85px 7%;
+      color: white;
+      text-align: center;
+      background:
+        linear-gradient(120deg, #101a35ee, #334f99dd),
+        url("https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=80")
+        center/cover;
+    }
+
+    .tag {
+      display: inline-block;
+      border: 1px solid #aabaff;
+      border-radius: 30px;
+      padding: 6px 15px;
+      margin-bottom: 20px;
+      color: #dce4ff;
+    }
+
+    .hero h1 {
+      font-size: clamp(35px, 6vw, 60px);
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      max-width: 600px;
+      margin: 0 auto 28px;
+      color: #e2e8f0;
+      font-size: 17px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #607df5;
+      color: white;
+      padding: 12px 23px;
+      border-radius: 8px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn:hover { background: #405ed6; }
+    .btn:disabled { opacity: 0.6; cursor: wait; }
+
+    .section { padding: 65px 7%; }
+
+    .section-heading {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .section-heading h2 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .section-heading p,
+    .event-content p,
+    .contact p { color: #64748b; }
+
+    .event-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 25px;
+    }
+
+    .event-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 22px #17203312;
+      transition: 0.25s;
+    }
+
+    .event-card:hover { transform: translateY(-5px); }
+
+    .event-card img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .event-content { padding: 22px; }
+
+    .category {
+      color: #526fe8;
+      font-size: 13px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .event-content h3 { margin: 7px 0; }
+    .event-content p { margin-bottom: 17px; font-size: 14px; }
+    .event-content .btn { width: 100%; text-align: center; }
+
+    .about {
+      background: #eaf0ff;
+      text-align: center;
+    }
+
+    .about p {
+      max-width: 700px;
+      margin: 12px auto 0;
+      color: #475569;
+    }
+
+    .contact { text-align: center; }
+    .contact p { margin: 10px 0 22px; }
+
+    #eventForm {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 28px;
+      border-radius: 15px;
+      box-shadow: 0 5px 22px #17203312;
+    }
+
+    #eventForm label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    #eventForm input,
+    #eventForm select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      font: inherit;
+    }
+
+    #formMessage {
+      margin-top: 15px;
+      overflow-wrap: anywhere;
+    }
+
+    footer {
+      background: #101a35;
+      color: #dbe4ff;
+      text-align: center;
+      padding: 25px 15px;
+    }
+
+    @media (max-width: 800px) {
+      .event-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .navbar { justify-content: center; }
+      .nav-links { justify-content: center; gap: 16px; }
+    }
+
+    @media (max-width: 550px) {
+      .event-grid { grid-template-columns: 1fr; }
+      .hero { padding: 65px 6%; }
+      .section { padding: 48px 6%; }
+      .section-heading h2 { font-size: 27px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="#home" class="logo">EventHub.</a>
+    <nav class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#events">Events</a>
+      <a href="#about">About</a>
+      <a href="#register">Register</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <span class="tag">Your Moments, Our Mission</span>
+      <h1>Discover Events.<br>Create Memories.</h1>
+      <p>Find amazing events, celebrate special occasions, and make every moment unforgettable with EventHub.</p>
+      <a href="#events" class="btn">Explore Events →</a>
+    </section>
+
+    <section class="section" id="events">
+      <div class="section-heading">
+        <h2>Explore Our Events</h2>
+        <p>Find the perfect event for your special moments.</p>
+      </div>
+
+      <div class="event-grid">
+        <article class="event-card">
+          <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=80" alt="Birthday celebration">
+          <div class="event-content">
+            <span class="category">Celebrations</span>
+            <h3>Birthday Parties</h3>
+            <p>Celebrate with decorations, friends, family and unforgettable memories.</p>
+            <a class="btn" href="#register">Register Interest</a>
+          </div>
+        </article>
+
+        <article class="event-card">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" alt="Wedding ceremony">
+          <div class="event-content">
+            <span class="category">Special Occasions</span>
+            <h3>Wedding Events</h3>
+            <p>Make your big day memorable with beautiful celebrations and thoughtful planning.</p>
+            <a class="btn" href="#register">Register Interest</a>
+          </div>
+        </article>
+
+        <article class="event-card">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80" alt="Technology conference">
+          <div class="event-content">
+            <span class="category">Learning & Networking</span>
+            <h3>Tech Events</h3>
+            <p>Connect with people, explore new technologies and discover opportunities.</p>
+            <a class="btn" href="#register">Register Interest</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section about" id="about">
+      <div class="section-heading">
+        <h2>Why Choose EventHub?</h2>
+        <p>Every great memory begins with a great event.</p>
+      </div>
+      <p>EventHub is an online event management platform concept designed to help people discover and plan celebrations, weddings and technology events.</p>
+    </section>
+
+    <section class="section" id="register">
+      <div class="section-heading">
+        <h2>Register for an Event</h2>
+        <p>Enter your details to register your interest.</p>
+      </div>
+
+      <form id="eventForm">
+        <label for="fullName">Full Name</label>
+        <input id="fullName" type="text" maxlength="100" placeholder="Enter your name" required>
+
+        <label for="email">Email Address</label>
+        <input id="email" type="email" maxlength="254" placeholder="Enter your email" required>
+
+        <label for="eventType">Select Event</label>
+        <select id="eventType" required>
+          <option value="">Choose an event</option>
+          <option value="Birthday Parties">Birthday Parties</option>
+          <option value="Wedding Events">Wedding Events</option>
+          <option value="Tech Events">Tech Events</option>
+        </select>
+
+        <label for="eventDate">Preferred Date</label>
+        <input id="eventDate" type="date" required>
+
+        <button class="btn" type="submit" style="width:100%;margin-top:20px">
+          Submit Registration
+        </button>
+        <p id="formMessage" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="section contact" id="contact">
+      <div class="section-heading">
+        <h2>Plan Your Next Event</h2>
+        <p>Have an event in mind? We would love to hear from you.</p>
+      </div>
+      <p>Email: your-email@example.com</p>
+      <a class="btn" href="mailto:your-email@example.com">Contact Us</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 EventHub. All rights reserved.</p>
+    <p>Built with HTML, CSS and GitHub Pages.</p>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDoXnqutZQgnvFo1m1zX8uCYhP5WSx9brM",
+      authDomain: "eventhub-website.firebaseapp.com",
+      projectId: "eventhub-website",
+      storageBucket: "eventhub-website.firebasestorage.app",
+      messagingSenderId: "683301555233",
+      appId: "1:683301555233:web:1cc634fd73c627e636e760",
+      measurementId: "G-EQJKQDT05S"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const form = document.getElementById("eventForm");
+    const message = document.getElementById("formMessage");
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const fullName = document.getElementById("fullName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const eventType = document.getElementById("eventType").value;
+      const eventDate = document.getElementById("eventDate").value;
+
+      if (!fullName || !email || !eventType || !eventDate) {
+        message.textContent = "Please complete all fields.";
+        return;
+      }
+
+      message.textContent = "Submitting registration...";
+      submitButton.disabled = true;
+
+      try {
+        await addDoc(collection(db, "registrations"), {
+          fullName,
+          email,
+          eventType,
+          eventDate,
+          createdAt: serverTimestamp()
+        });
+
+        message.textContent = "Registration successful!";
+        form.reset();
+      } catch (error) {
+        console.error("Firebase registration error:", error);
+        message.textContent =
+          "Registration failed. Please check Firebase Firestore rules and try again.";
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
